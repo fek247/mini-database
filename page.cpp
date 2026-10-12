@@ -32,4 +32,8 @@ namespace MiniDB {
         auto first = _byte_buffers.begin() + offset + sizeof(size);
         return std::vector<std::byte>(first, first + size);
     }
+
+    int Page::maxLength(int strlen) {
+        return sizeof(int) + strlen * BYTES_PER_CHAR;
+    }
 }
