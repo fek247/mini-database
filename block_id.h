@@ -10,7 +10,7 @@ namespace MiniDB {
             std::string fileName() const { return _file_name; }
             int blockNumber() const { return _block_number; }
             bool equals(const BlockId& block);
-            std::tring toString();
+            std::string toString();
             int hashCode();
         private:
             std::string _file_name;

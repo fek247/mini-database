@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <cstring>
 
 namespace MiniDB {
     class Page {
@@ -16,6 +17,7 @@ namespace MiniDB {
             std::string getString(int offset);
             std::vector<std::byte> getBytes(int offset);
             int maxLength(int strlen);
+            std::byte* data() { return _byte_buffers.data(); };
         private:
             std::vector<std::byte> _byte_buffers;
     };
