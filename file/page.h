@@ -18,6 +18,7 @@ namespace MiniDB {
             std::vector<std::byte> getBytes(int offset);
             int maxLength(int strlen);
             std::byte* data() { return _byte_buffers.data(); };
+            void clear();
         private:
             std::vector<std::byte> _byte_buffers;
     };

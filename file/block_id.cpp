@@ -7,7 +7,7 @@ namespace MiniDB {
     }
 
     std::string BlockId::toString() {
-        return "[file " + _file_name + ", block " + _block_number + "]";
+        return "[file " + _file_name + ", block " + std::to_string(_block_number) + "]";
     }
 
     int BlockId::hashCode() {
