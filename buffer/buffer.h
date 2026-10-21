@@ -3,21 +3,29 @@
 #include <optional>
 #include "block_id.h"
 #include "page.h"
+#include "file_manager.h"
 
 namespace MiniDB {
     class Buffer {
         public:
-            Buffer(const Page& page) : _buffer_page(page) {};
-            void assignBlock(const BlockId& block) { _assigned_block = block; };
-            bool isPinned() { return _is_pinned; };
+            Buffer(FileManager& file_mgr, Page page) : _file_mgr(file_mgr), _buffer_page(std::move(page)) {};
+            bool isPinned() { return _pin_count > 0; };
             int getTimeReadIn() { return _time_read_in; };
             int getTimeUnpinned() { return _time_unppined; };
-            void pinBlock(const BlockId& block, int time);
+            const std::optional<BlockId>& getAssignedBlock() { return _assigned_block; };
+            void pin(int time);
+            void unpin(int time);
+            void assignToBlock(const BlockId& block);
+            void setModified() { _is_dirty = true; };
+            Page& contents() { return _buffer_page; };
+            void flush();
         private:
+            FileManager& _file_mgr;
             std::optional<BlockId> _assigned_block;
             Page _buffer_page;
-            bool _is_pinned;
-            int _time_read_in;
-            int _time_unppined;
+            bool _is_dirty = false;
+            int _pin_count = 0;
+            int _time_read_in = 0;
+            int _time_unppined = -1;
     };
 }
