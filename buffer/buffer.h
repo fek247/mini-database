@@ -1,9 +1,9 @@
 #pragma once
 
 #include <optional>
-#include "block_id.h"
-#include "page.h"
-#include "file_manager.h"
+#include "file/block_id.h"
+#include "file/page.h"
+#include "file/file_manager.h"
 
 namespace MiniDB {
     class Buffer {

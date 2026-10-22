@@ -4,8 +4,8 @@
 #include <cstring>
 #include <stdexcept>
 #include <mutex>
-#include "page.h"
-#include "file_manager.h"
+#include "file/page.h"
+#include "file/file_manager.h"
 
 namespace MiniDB {
     class LogManager {
