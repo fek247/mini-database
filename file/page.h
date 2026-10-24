@@ -16,6 +16,7 @@ namespace MiniDB {
             int getInt(int offset);
             std::string getString(int offset);
             std::vector<std::byte> getBytes(int offset);
+            // Get the number of bytes needed to store a string of length strlen
             int maxLength(int strlen);
             std::byte* data() { return _byte_buffers.data(); };
             void clear();

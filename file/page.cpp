@@ -6,11 +6,13 @@ namespace MiniDB {
     }
 
     void Page::setString(int offset, const std::string& str) {
-        memcpy(_byte_buffers.data() + offset, &str, sizeof(str));
+        setInt(offset, str.size());
+        memcpy(_byte_buffers.data() + offset + sizeof(int), str.data(), str.size());
     }
 
     void Page::setBytes(int offset, const std::vector<std::byte>& bytes) {
-        memcpy(_byte_buffers.data() + offset, &bytes, sizeof(bytes));
+        setInt(offset, bytes.size());
+        memcpy(_byte_buffers.data() + offset + sizeof(int), bytes.data(), bytes.size());
     }
 
     int Page::getInt(int offset) {

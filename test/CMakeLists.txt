@@ -1,4 +1,7 @@
-set(Sources example_test.cpp)
+set(Sources 
+    file/page_test.cpp
+    file/block_id_test.cpp
+)
 
 add_executable(mini_db_test ${Sources})
 
