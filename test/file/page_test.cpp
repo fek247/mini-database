@@ -5,8 +5,8 @@
 namespace MiniDB {
     class FileTest : public testing::Test {
         protected:
-            int block_size = 400;
-            Page page = Page(block_size);
+            int _block_size = 400;
+            Page page = Page(_block_size);
 };
 
     TEST_F(FileTest, GetAndSetInt) {
@@ -50,10 +50,10 @@ namespace MiniDB {
 
     TEST_F(FileTest, IntAtBoundary) {
         page.setInt(0, -1);
-        page.setInt(block_size - sizeof(int), INT_MAX);
+        page.setInt(_block_size - sizeof(int), INT_MAX);
 
         EXPECT_EQ(page.getInt(0), -1);
-        EXPECT_EQ(page.getInt(block_size - sizeof(int)), INT_MAX);
+        EXPECT_EQ(page.getInt(_block_size - sizeof(int)), INT_MAX);
     }
 
     TEST_F(FileTest, StringAtBoundary) {
@@ -62,10 +62,10 @@ namespace MiniDB {
 
         std::string end = "end of year!";
         int max_length = page.maxLength(end.size());
-        page.setString(block_size - max_length, end);
+        page.setString(_block_size - max_length, end);
         
         EXPECT_EQ(page.getString(0), begin);
-        EXPECT_EQ(page.getString(block_size - max_length), end);
+        EXPECT_EQ(page.getString(_block_size - max_length), end);
     }
 
     TEST_F(FileTest, EmptyString) {

@@ -4,27 +4,27 @@
 namespace MiniDB {
     class BlockIdTest : public testing::Test {
         protected:
-            int block_number = 10;
-            std::string file_name = "test.txt";
-            BlockId block = BlockId(file_name, block_number);
+            int _block_number = 10;
+            std::string _file_name = "test.txt";
+            BlockId block = BlockId(_file_name, _block_number);
     };
 
     TEST_F(BlockIdTest, GetFileName) {
-        EXPECT_EQ(block.fileName(), file_name);
+        EXPECT_EQ(block.fileName(), _file_name);
     }
 
     TEST_F(BlockIdTest, GetBlockNumber) {
-        EXPECT_EQ(block.blockNumber(), block_number);
+        EXPECT_EQ(block.blockNumber(), _block_number);
     }
 
     TEST_F(BlockIdTest, Equal) {
-        BlockId sameBlock = BlockId("test.txt", block_number);
+        BlockId sameBlock = BlockId("test.txt", _block_number);
         EXPECT_TRUE(block.equals(sameBlock));
 
-        BlockId differenceFileName = BlockId("another.txt", block_number);
+        BlockId differenceFileName = BlockId("another.txt", _block_number);
         EXPECT_FALSE(block.equals(differenceFileName));
 
-        BlockId differenceBlockNumber = BlockId("test.txt", block_number + 1);
+        BlockId differenceBlockNumber = BlockId("test.txt", _block_number + 1);
         EXPECT_FALSE(block.equals(differenceBlockNumber));
     }
 }
