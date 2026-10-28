@@ -16,6 +16,7 @@ set(Sources
     file/file_manager.cpp
     file/page.cpp
     log/log_manager.cpp
+    log/log_iterator.cpp
 )
 
 set(Headers
@@ -25,6 +26,7 @@ set(Headers
     file/file_manager.h
     file/page.h
     log/log_manager.h
+    log/log_iterator.h
 )
 
 add_library(${PROJECT_NAME} STATIC ${Sources} ${Headers})
