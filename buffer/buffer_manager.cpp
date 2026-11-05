@@ -25,7 +25,13 @@ namespace MiniDB {
         }
 
         if (target_index == -1) {
-            throw std::runtime_error("Don't have any unpinned buffer in buffer poll. Need queue this request! Implement later");
+            std::unique_lock lock(_wait_lock);
+            _condition_var.wait(lock, [this] {
+                return !_unpin_indexs.empty();
+            });
+            target_index = _unpin_indexs.back();
+            _unpin_indexs.pop_back();
+            lock.unlock();
         }
 
         _curr_time++;
@@ -40,6 +46,9 @@ namespace MiniDB {
     void BufferManager::unpin(Buffer& buffer) {
         _curr_time++;
         buffer.unpin(_curr_time);
+        if (!buffer.isPinned()) {
+             
+        }
     }
 
     void BufferManager::flushAll() {
