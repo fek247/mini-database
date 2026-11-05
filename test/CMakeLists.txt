@@ -2,6 +2,7 @@ set(Sources
     file/page_test.cpp
     file/block_id_test.cpp
     file/file_manager_test.cpp
+    log/log_manager_test.cpp
 )
 
 add_executable(mini_db_test ${Sources})

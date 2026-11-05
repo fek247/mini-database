@@ -14,7 +14,7 @@ namespace MiniDB {
         }
 
         int remain = _file_mgr.blockSize() - INT_SIZE - curr_len;
-        if (remain < record_size + INT_SIZE) {
+        if (remain < byte_needed) {
             flushPage();
             _log_page.clear();
             _curr_block = _file_mgr.append(_log_file_name);
@@ -43,5 +43,10 @@ namespace MiniDB {
     void LogManager::flushPage() {
         _file_mgr.write(_curr_block, _log_page);
         _last_saved_lsn = _last_lsn;
+    }
+
+    LogIterator LogManager::iterator() {
+        flushPage();
+        return LogIterator(_file_mgr, _curr_block);
     }
 }

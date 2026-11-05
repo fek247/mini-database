@@ -6,6 +6,7 @@
 #include <mutex>
 #include "file/page.h"
 #include "file/file_manager.h"
+#include "log_iterator.h"
 
 namespace MiniDB {
     class LogManager {
@@ -19,6 +20,7 @@ namespace MiniDB {
                 };
             int append(const std::vector<std::byte>& record);
             void flush(int lsn);
+            LogIterator iterator();
         private:
             int _last_lsn = 0;
             int _last_saved_lsn = 0;
