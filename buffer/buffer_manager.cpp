@@ -1,35 +1,32 @@
 #include "buffer_manager.h"
 
 namespace MiniDB {
-    Buffer BufferManager::pin(const BlockId& block) {
+    Buffer* BufferManager::pin(const BlockId& block) {
+        std::unique_lock<std::mutex> lock(_mtx);
         long long now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         auto buffer = tryToPin(block);
-        while (!buffer.has_value() && !waitingTooLong(now)) {
-            std::unique_lock<std::mutex> lock(_unpin_lock);
+        while (!buffer && !waitingTooLong(now)) {
             _condition_var.wait(lock, [this] {
                 return _has_unpin;
             });
-            if (auto r = tryToPin(block)) {
-                buffer.emplace(std::move(*r));
-            }
+            buffer = tryToPin(block);
         }
 
-        if (!buffer.has_value()) {
+        if (!buffer) {
             throw std::runtime_error("Buffer abort exception");
         }
         _curr_time++;
 
-        return buffer.value();
+        return buffer;
     }
 
     void BufferManager::unpin(Buffer& buffer) {
+        std::lock_guard<std::mutex> lock(_mtx);
         _curr_time++;
         buffer.unpin(_curr_time);
         if (!buffer.isPinned()) {
-            {
-                std::lock_guard<std::mutex> lock(_unpin_lock);
-                _has_unpin = true;
-            }
+            _has_unpin = true;
+            _num_available++;
             _condition_var.notify_all();
         }
     }
@@ -44,7 +41,7 @@ namespace MiniDB {
         flushAll();
     }
 
-    std::optional<Buffer> BufferManager::tryToPin(const BlockId& block) {
+    Buffer* BufferManager::tryToPin(const BlockId& block) {
         int target_index = -1;
         int min_time_readin = -1;
         bool exist = false;
@@ -68,15 +65,16 @@ namespace MiniDB {
         }
 
         if (target_index == -1) {
-            return std::nullopt;
+            return nullptr;
         }
 
         if (!exist) {
             _buffer_pool[target_index].assignToBlock(block);
+            _num_available--;
         }
         _buffer_pool[target_index].pin(_curr_time);
 
-        return _buffer_pool[target_index]; 
+        return &_buffer_pool[target_index]; 
     }
 
     bool BufferManager::waitingTooLong(long long timestamp) {
