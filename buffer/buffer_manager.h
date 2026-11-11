@@ -2,9 +2,6 @@
 
 #include "buffer.h"
 #include "file/file_manager.h"
-#include <vector>
-#include <math.h>
-#include <stdexcept>
 #include <condition_variable>
 
 namespace MiniDB {
@@ -17,16 +14,18 @@ namespace MiniDB {
                 }
             };
             ~BufferManager();
-            Buffer& pin(const BlockId& block);
+            Buffer pin(const BlockId& block);
             void unpin(Buffer& buffer);
             void flushAll();
         private:
             FileManager& _file_mgr;
             std::vector<Buffer> _buffer_pool;
-            std::vector<BlockId> _wait_queue;
-            std::mutex _wait_lock;
-            std::vector<size_t> _unpin_indexs; 
+            std::mutex _unpin_lock;
             std::condition_variable _condition_var;
+            bool _has_unpin = false;
             int _curr_time = 0;
+            std::optional<Buffer> tryToPin(const BlockId& block);
+            bool waitingTooLong(long long timestamp);
+            const long MAX_TIME = 10000;
     };
 }
